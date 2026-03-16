@@ -54,6 +54,10 @@ canvas {
 </div>
 </div><div id="ctrl">&#8592; &#8594; MOVE &nbsp;|&nbsp; Z / SPACE / &#8593; JUMP &nbsp;|&nbsp; Stomp enemies &nbsp;|&nbsp; Reach the flag!</div>
 <script>
+const bgm = new Audio('https://archive.org/download/SuperMarioBros.ThemeMusic/Super%20Mario%20Bros.%20Theme%20Music.mp3');
+bgm.loop = true;
+bgm.volume = 0.5;
+
 const ICONS = {
   vercel: "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAkACQDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAQGCAcJ/8QAKxAAAQQBAwMDAgcAAAAAAAAAAQACAwQFBxEhBhMxEhQiCFEJF0FXgZXS/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AMZIik4qhcyuUqYzHV5LN25MyCvDGN3SSPcGtaB9ySB/KCMi7D9Seh+S0gnwUrrLshQyVJglshvwjuNaO9GDsPiT8mEgEtJHJYSuPICIiAtc/h86Vm/mLOqGZrO9tQc6rh2vaQJJiNpJh9wxp9A4ILnO8FiyMrHiOveusPjocbietOo8fSgBEVarlJooowSSfS1rgBuSTx+pKD0/1w0+oam6a5TpS5245pmd2jYc0H29lu5jf4JA33a7bktc4DyvKnNY29hsxcxGTrPrXqU769mF228cjHFrmnbjggjhWL8z9S/3D6u/urH+1XMxlMlmcjLksvkLeRvTbd2zamdLK/YBo9TnEk7AAcnwAgiIiICIiAiIgIiIP//Z",
   anthropic: "data:image/png;base64,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",
@@ -111,7 +115,7 @@ const platforms=[
   {x:400, y:256,w:32,h:32,t:'?',hit:false,coin:true},
   {x:432, y:256,w:32,h:32,t:'I',icon:'chatgpt',   hit:false},
   // Single ? above
-  {x:400, y:192,w:32,h:32,t:'I',icon:'github',    hit:false},
+  {x:400, y:144,w:32,h:32,t:'I',icon:'github',    hit:false},
 
   // === ZONE 2: Row of bricks + question blocks ===
   {x:608, y:224,w:32,h:32,t:'B'},
@@ -120,7 +124,7 @@ const platforms=[
   {x:704, y:224,w:32,h:32,t:'I',icon:'anthropic', hit:false},
   {x:736, y:224,w:32,h:32,t:'B'},
   // High single block
-  {x:672, y:160,w:32,h:32,t:'I',icon:'vercel',    hit:false},
+  {x:672, y:128,w:32,h:32,t:'I',icon:'vercel',    hit:false},
 
   // === ZONE 3: After first pipe — long brick row ===
   {x:960, y:224,w:32,h:32,t:'B'},
@@ -128,9 +132,9 @@ const platforms=[
   {x:1024,y:224,w:32,h:32,t:'I',icon:'coinbase',  hit:false},
   {x:1056,y:224,w:32,h:32,t:'B'},
   // Floating coins row (question blocks)
-  {x:992, y:160,w:32,h:32,t:'?',hit:false,coin:true},
-  {x:1024,y:160,w:32,h:32,t:'?',hit:false,coin:true},
-  {x:1056,y:160,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:992, y:128,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:1024,y:128,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:1056,y:128,w:32,h:32,t:'?',hit:false,coin:true},
 
   // === ZONE 4: Mid section ===
   {x:1280,y:224,w:32,h:32,t:'B'},
@@ -140,8 +144,8 @@ const platforms=[
   {x:1408,y:224,w:32,h:32,t:'I',icon:'perplexity',hit:false},
   {x:1440,y:224,w:32,h:32,t:'B'},
   // High row above
-  {x:1312,y:160,w:32,h:32,t:'?',hit:false,coin:true},
-  {x:1408,y:160,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:1312,y:128,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:1408,y:128,w:32,h:32,t:'?',hit:false,coin:true},
 
   // === ZONE 5: After gap zone ===
   {x:1760,y:224,w:32,h:32,t:'B'},
@@ -154,7 +158,7 @@ const platforms=[
   {x:2048,y:192,w:32,h:32,t:'B'},
   {x:2080,y:192,w:32,h:32,t:'B'},
   {x:2112,y:192,w:32,h:32,t:'B'},
-  {x:2112,y:160,w:32,h:32,t:'I',icon:'railway',   hit:false},
+  {x:2112,y:128,w:32,h:32,t:'I',icon:'railway',   hit:false},
   // Lower row
   {x:2048,y:256,w:32,h:32,t:'I',icon:'github',    hit:false},
   {x:2080,y:256,w:32,h:32,t:'B'},
@@ -163,7 +167,7 @@ const platforms=[
   {x:2240,y:224,w:32,h:32,t:'B'},
   {x:2272,y:224,w:32,h:32,t:'I',icon:'chatgpt',   hit:false},
   {x:2304,y:224,w:32,h:32,t:'B'},
-  {x:2336,y:192,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:2336,y:160,w:32,h:32,t:'?',hit:false,coin:true},
   {x:2368,y:224,w:32,h:32,t:'B'},
   {x:2400,y:224,w:32,h:32,t:'I',icon:'uniswap',   hit:false},
 
@@ -171,7 +175,7 @@ const platforms=[
   {x:2816,y:224,w:32,h:32,t:'B'},
   {x:2848,y:224,w:32,h:32,t:'I',icon:'framer',    hit:false},
   {x:2880,y:224,w:32,h:32,t:'B'},
-  {x:2880,y:192,w:32,h:32,t:'?',hit:false,coin:true},
+  {x:2880,y:160,w:32,h:32,t:'?',hit:false,coin:true},
 
   // === STAIRCASE UP — climbs right, tallest on right ===
   {x:3168,y:320,w:32,h:32,t:'S'},
@@ -372,8 +376,8 @@ function update(){
   document.getElementById('sc').textContent=String(score).padStart(6,'0');
 }
 
-function killPlayer(){if(!P.alive)return;P.alive=false;P.vy=-14;setTimeout(()=>{const m=document.getElementById('msg');m.innerHTML='GAME OVER<br><br><small style="font-size:10px">Press R to restart</small>';m.style.display='block';gameOver=true;},1300);}
-function triggerWin(){if(won)return;won=true;score+=timeLeft*50;setTimeout(()=>{const m=document.getElementById('msg');m.innerHTML='&#127881; LEVEL CLEAR! &#127881;<br><br>SCORE: '+String(score).padStart(6,'0')+'<br><br><small style="font-size:10px">Press R to restart</small>';m.style.display='block';},700);}
+function killPlayer(){if(!P.alive)return;P.alive=false;P.vy=-14;bgm.pause();bgm.currentTime=0;setTimeout(()=>{const m=document.getElementById('msg');m.innerHTML='GAME OVER<br><br><small style="font-size:10px">Press R to restart</small>';m.style.display='block';gameOver=true;},1300);}
+function triggerWin(){if(won)return;won=true;score+=timeLeft*50;bgm.pause();bgm.currentTime=0;setTimeout(()=>{const m=document.getElementById('msg');m.innerHTML='&#127881; LEVEL CLEAR! &#127881;<br><br>SCORE: '+String(score).padStart(6,'0')+'<br><br><small style="font-size:10px">Press R to restart</small>';m.style.display='block';},700);}
 
 // ─── DRAW ─────────────────────────────────────────────────────────────────────
 function nesCloud(cx,cy){
@@ -838,6 +842,7 @@ document.getElementById('startBtn').addEventListener('click',()=>{
   gameStarted=true;
   document.getElementById('startScreen').style.display='none';
   document.getElementById('c').focus();
+  bgm.play().catch(()=>{});
 });
 
 
